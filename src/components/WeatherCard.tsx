@@ -1,17 +1,5 @@
 import Sidebar from "./Sidebar";
 
-interface WeatherType {
-  feels_like: number;
-  humidity: number;
-  pressure: number;
-  country: string;
-  main: string;
-  description: string;
-  speed: number; //?
-  temp_max: number;
-  temp_min: number;
-}
-
 const WeatherCard = () => {
   return (
     <div className="bg-weather h-screen bg-center bg-cover ">
