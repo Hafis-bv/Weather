@@ -1,10 +1,44 @@
+import { useState, type FormEvent } from "react";
 import { IoIosSearch } from "react-icons/io";
+import { useWeather } from "../context/weatherContext ";
 
 const Sidebar = () => {
+  const [title, setTitle] = useState<string>("");
+  const { weather, loading, error, getWeather } = useWeather();
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    try {
+      const data = await getWeather(title);
+      if (data) {
+        // alert("We found your city");
+        console.log(weather);
+      }
+      setTitle("");
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
+        loading
+      </div>
+    );
+  }
+
   return (
     <div className="absolute h-[75%] sm:h-screen sm:w-[45%] sm:rounded-tr-none sm:rounded-bl-xl bottom-0 right-0 rounded-tl-xl rounded-tr-xl bg-white/10 backdrop-blur-lg p-4 w-full shadow-lg text-gray-300 ">
-      <form className="relative max-w-[350px] mx-auto flex justify-center flex-col items-center py-10">
+      <form
+        onSubmit={handleSubmit}
+        className="relative max-w-[350px] mx-auto flex justify-center flex-col items-center py-10"
+      >
         <input
+          value={title}
+          onChange={(e) => {
+            setTitle(e.target.value);
+          }}
           type="text"
           placeholder="Search..."
           className=" rounded-xl max-w-[350px] w-full py-2 pl-3 outline-none pr-10 text-slate-800 bg-gray-300"
