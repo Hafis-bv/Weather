@@ -1,7 +1,12 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 import type { WeatherType } from "../types/weather";
 import axios from "axios";
-
 interface WeatherProviderProps {
   children: ReactNode;
 }
@@ -16,12 +21,21 @@ interface WeatherContext {
 const weatherContext = createContext(null as WeatherContext | null);
 
 export default function WeatherProvider({ children }: WeatherProviderProps) {
-  const [weather, setWeather] = useState<WeatherType | null>(null);
+  const [weather, setWeather] = useState<WeatherType | null>(() => {
+    const saved = localStorage.getItem("weatherData");
+    return saved ? JSON.parse(saved) : null;
+  });
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
   const BASE_URL = import.meta.env.VITE_WEATHER_BASE_URL;
+
+  useEffect(() => {
+    if (weather) {
+      localStorage.setItem("weatherData", JSON.stringify(weather));
+    }
+  }, [weather]);
 
   async function getWeather(city: string) {
     setLoading(true);
